@@ -18,7 +18,7 @@ export type StageAiConfig = z.infer<typeof StageAiConfigSchema>;
 
 /** 外部命令行工具的适配器种类、可执行文件路径与默认参数配置 */
 export const CliConfigSchema = z.object({
-  adapter: z.enum(['agy', 'generic']),
+  adapter: z.enum(['agy', 'generic', 'codex']),
   bin: z.string().min(1),
   extraArgs: z.array(z.string()).default([]),
   argsTemplate: z.array(z.string()).optional(),

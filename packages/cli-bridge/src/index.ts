@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { CliConfig, LlmCallStatus } from '@aidaily/contracts';
 import { agyAdapter } from './adapters/agy.js';
+import { codexAdapter } from './adapters/codex.js';
 import { createConfiguredGenericAdapter, genericAdapter } from './adapters/generic.js';
 import {
   CliAuthError,
@@ -26,6 +27,7 @@ import type {
 export const CLI_BRIDGE_VERSION = '0.1.0';
 
 export * from './adapters/agy.js';
+export * from './adapters/codex.js';
 export * from './adapters/generic.js';
 export * from './errors.js';
 export * from './exec.js';
@@ -99,6 +101,7 @@ export class CliBridge {
     this.logCall = opts.logCall;
 
     this.register(agyAdapter);
+    this.register(codexAdapter);
     this.register(genericAdapter);
   }
 

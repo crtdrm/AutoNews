@@ -15,7 +15,7 @@ ai每日报/
 │   └── web/                 # 本地 Next.js 管理后台
 ├── packages/
 │   ├── contracts/           # 全局共享 Zod 校验规则与 TypeScript 类型契约
-│   ├── cli-bridge/          # 外部大模型 CLI 调用兼容层（内置 agy 与通用 CLI 适配器）
+│   ├── cli-bridge/          # 外部大模型 CLI 调用兼容层（内置 agy、codex 与通用 CLI 适配器）
 │   ├── tts/                 # 语音合成抽象接口、单句缓存、响度统一与时间轴拼装
 │   └── core/                # 共享业务内核：抓取、编辑校对、渲染质检、投稿、定时调度与恢复
 ├── templates/
@@ -34,7 +34,7 @@ ai每日报/
 - **Node.js**：`>= 24.0.0`（项目使用 Node 内置 `node:sqlite`，纯 ESM）
 - **ffmpeg / ffprobe**：负责音频响度统一、黑屏与静音质检、帧序列合成为 MP4
 - **Playwright Chromium**：负责驱动前端模板逐帧截屏与封面导出（`npx playwright install chromium`）
-- **大模型命令行工具**：默认配置为 `agy`（需在本机完成登录与可用性验证），也支持通过配置文件扩展其他命令行工具
+- **大模型命令行工具**：支持 `agy`、`codex` 和通用命令行配置；当前本机部署通过 Codex 复用现有模型连接，设置方法见 [本地部署与使用](docs/本地部署与使用.md)
 - **B 站投稿工具**：`biliup`（需通过扫码完成凭据登录）
 
 ---

@@ -1,0 +1,15 @@
+# Codex 配置片段：合并到完整的 config/settings.local.yaml 中使用。
+# bin 需改为本机实际路径；此文件只含模型路由，不含连接密钥。
+clis:
+  codex:
+    adapter: codex
+    bin: codex
+    extraArgs: []
+
+ai:
+  stages:
+    select:    { cli: codex, model: gpt-6.1-sol, timeoutSec: 300, retries: 1 }
+    summarize: { cli: codex, model: gpt-6.1-sol, timeoutSec: 300, retries: 1 }
+    polish:    { cli: codex, model: gpt-6.1-sol, timeoutSec: 300, retries: 1 }
+    factcheck: { cli: codex, model: gpt-6.1-sol, timeoutSec: 300, retries: 1 }
+    package:   { cli: codex, model: gpt-6.1-sol, timeoutSec: 300, retries: 1 }

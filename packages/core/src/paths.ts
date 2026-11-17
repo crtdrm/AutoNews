@@ -44,11 +44,15 @@ export function resolveRepoPaths(rootDir: string): RepoPaths {
   const configDir = path.join(resolvedRoot, 'config');
   const storageDir = path.join(resolvedRoot, 'storage');
   const runsDir = path.join(storageDir, 'runs');
+  const localSettingsFile = path.join(configDir, 'settings.local.yaml');
 
   return {
     rootDir: resolvedRoot,
     configDir,
-    settingsFile: path.join(configDir, 'settings.yaml'),
+    // 本机配置单独保存，网页和命令行的配置修改也写回同一文件。
+    settingsFile: fs.existsSync(localSettingsFile)
+      ? localSettingsFile
+      : path.join(configDir, 'settings.yaml'),
     sourcesFile: path.join(configDir, 'sources.yaml'),
     storageDir,
     dbFile: path.join(storageDir, 'state.sqlite'),

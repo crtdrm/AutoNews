@@ -3,7 +3,13 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterEach, describe, expect, it } from 'vitest';
-import { loadSettings, loadSources, updateSettingsFile, updateSourcesFile } from '../src/index.js';
+import {
+  createCore,
+  loadSettings,
+  loadSources,
+  updateSettingsFile,
+  updateSourcesFile,
+} from '../src/index.js';
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const tempDirs: string[] = [];
@@ -13,6 +19,33 @@ afterEach(async () => {
 });
 
 describe('config loader and comment-preserving writer', () => {
+  it('loads local settings and saves changes there without changing the shared defaults', async () => {
+    const rootDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aidaily-local-config-'));
+    tempDirs.push(rootDir);
+    const configDir = path.join(rootDir, 'config');
+    await fs.mkdir(configDir);
+    const settingsFile = path.join(configDir, 'settings.yaml');
+    const localFile = path.join(configDir, 'settings.local.yaml');
+    await fs.copyFile(path.join(REPO_ROOT, 'config', 'settings.yaml'), settingsFile);
+    await fs.copyFile(
+      path.join(REPO_ROOT, 'config', 'sources.yaml'),
+      path.join(configDir, 'sources.yaml'),
+    );
+    await fs.copyFile(settingsFile, localFile);
+    const sharedDefaults = await fs.readFile(settingsFile, 'utf8');
+    await updateSettingsFile(localFile, { timezone: 'UTC' });
+    const core = await createCore({ rootDir });
+    try {
+      expect(core.context.paths.settingsFile).toBe(localFile);
+      expect(core.config.getSettings().timezone).toBe('UTC');
+      await core.config.updateSettings({ timezone: 'Asia/Shanghai' });
+      expect((await loadSettings(localFile)).timezone).toBe('Asia/Shanghai');
+      expect(await fs.readFile(settingsFile, 'utf8')).toBe(sharedDefaults);
+    } finally {
+      await core.close();
+    }
+  });
+
   it('updates nested settings while preserving YAML comments', async () => {
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aidaily-cfg-'));
     tempDirs.push(tmpDir);

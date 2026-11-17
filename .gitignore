@@ -12,6 +12,7 @@ next-env.d.ts
 # Runtime data & secrets
 /storage/
 /tmp/
+/config/settings.local.yaml
 .env
 .env.*
 !.env.example
